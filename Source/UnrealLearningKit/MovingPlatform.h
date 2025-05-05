@@ -26,15 +26,19 @@ public:
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	FVector MovementVelocity = FVector(0, 100, 0); // Move in the X direction in cm/s
+	FVector MovementVelocity = FVector(0, 0, 100); // Move in the X direction in cm/s
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MovementDistance = 1000; // Move 1000 cm (10 m) in the X direction
 
+	UPROPERTY(EditAnywhere, Category = "Rotation")
+	FRotator RotationVelocity;
+
 	FVector StartLocation = FVector(0, 0, 0);
 
 	void MovePlatform(float DeltaTime);
-
 	void RotatePlatform(float DeltaTime);
 
+	bool ShouldReverseDirection() const;
+	float GetDistanceMoved() const;
 };

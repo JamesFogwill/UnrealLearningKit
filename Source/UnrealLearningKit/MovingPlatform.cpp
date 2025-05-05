@@ -32,20 +32,11 @@ void AMovingPlatform::Tick(float DeltaTime)
 
 void AMovingPlatform::MovePlatform(float DeltaTime)
 {
-	FVector CurrentLocation = GetActorLocation(); // Get the current location of the actor
+	
+	
 
-    CurrentLocation = CurrentLocation + (MovementVelocity * DeltaTime); // Update the location based on velocity and delta time;
-
-	SetActorLocation(CurrentLocation); // Set the actor's location to new location
-
-	float DistanceMoved = FVector::Dist(CurrentLocation, StartLocation); // Calculate the distance from the start location
-
-	if(DistanceMoved > MovementDistance) // If the distance moved is greater than the movement distance
+	if(ShouldReverseDirection()) // If the distance moved is greater than the movement distance
 	{
-
-		FString Name = GetName(); // Get the name of the actor
-		float OverShoot = DistanceMoved - MovementDistance; // Calculate the overshoot distance
-		UE_LOG(LogTemp, Warning, TEXT("Actor: %s Overshot by distance: %f"), *Name, OverShoot); // Log the overshoot distance
 
 		FVector MoveDirection = MovementVelocity.GetSafeNormal(); // Get the normalized direction of movement
 
@@ -55,9 +46,29 @@ void AMovingPlatform::MovePlatform(float DeltaTime)
 		// Reverse the direction of movement
 		MovementVelocity = -MovementVelocity;
 	}
+	else{
+
+		FVector CurrentLocation = GetActorLocation(); // Get the current location of the actor
+
+    	CurrentLocation = CurrentLocation + (MovementVelocity * DeltaTime); // Update the location based on velocity and delta time;
+
+		SetActorLocation(CurrentLocation); // Set the actor's location to new location
+	}
 }
 
 void AMovingPlatform::RotatePlatform(float DeltaTime)
 {
-	UE_LOG(LogTemp, Display, TEXT("Function RotatePlatform called")); // Log the function call
+	AddActorLocalRotation(RotationVelocity * DeltaTime); // Rotate the platform based on the rotation velocity and delta time
+}
+
+bool AMovingPlatform::ShouldReverseDirection() const
+{
+
+	float DistanceMoved = GetDistanceMoved();
+	return DistanceMoved > MovementDistance;
+}
+
+float AMovingPlatform::GetDistanceMoved() const
+{
+	return FVector::Dist(GetActorLocation(), StartLocation); // Calculate the distance from the start location
 }
